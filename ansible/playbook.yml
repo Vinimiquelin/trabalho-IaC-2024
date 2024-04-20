@@ -1,0 +1,51 @@
+- hosts: terraform-aws-vm
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Update do apt
+      apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+    - name: Instalar o Docker e o Docker Compose
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - docker.io
+        - docker-compose
+      become: yes
+
+    - name: Adicionar o diretório do Docker Compose ao PATH
+      lineinfile:
+        dest: "~/.bashrc"
+        line: 'export PATH=$PATH:/usr/local/bin/docker-compose'
+      become: yes
+
+    - name: Ligar o Docker
+      systemd:
+        name: docker
+        state: started
+      become: yes
+
+    - name: Adicionar usuário ao grupo docker
+      user:
+        name: admin
+        groups: docker
+        append: yes
+      become: yes
+
+    - name: Clonar o projeto Voting APP
+      git:
+        repo: https://github.com/Azure-Samples/azure-voting-app-redis.git
+        dest: /home/admin/azure-voting-app-redis
+      become: yes
+
+    - name: Acessar o diretório azure-voting-app-redis
+      shell: cd /home/admin/azure-voting-app-redis
+      become: yes
+
+    - name: Executar o comando docker-compose up -d
+      shell: docker-compose up -d
+      args:
+        chdir: /home/admin/azure-voting-app-redis
+      become: yes
