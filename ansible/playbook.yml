@@ -5,6 +5,11 @@
   tasks:
     - name: Update do apt
       apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+      retries: 3
+      delay: 1
+      register: result
+      until: result is succeeded
+      ignore_errors: yes
 
     - name: Instalar o Docker e o Docker Compose
       apt:
