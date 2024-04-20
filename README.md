@@ -16,7 +16,7 @@ atualizar inventory.ini com public_dns = "ec2-XXX-XXX-XXX-XXX.compute-1.amazonaw
 
 no WSL, utilizar o comando a seguir para abrir o explorador de arquivos: "explorer.exe ."
 
-ansible-playbook -i inventory.ini playbook.yml ("yes" para confirmar)
+ansible-playbook -i inventory.ini playbook.yml
 
 # acessar o projeto Voting APP provisionado
 pegar public_ip = "XXX.XXX.XXX.XXX"
